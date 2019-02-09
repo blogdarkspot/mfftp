@@ -1,0 +1,6 @@
+namespace FTP {
+
+    class ImplCMD {
+
+    };
+};
