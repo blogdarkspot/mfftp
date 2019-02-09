@@ -2,15 +2,15 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#include <windows.h>
 #include <iphlpapi.h>
 #include <stdio.h>
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+
 int main(int argc, char** argv)
 {
-
     WSADATA wsaData;
     {
         int iResult;
@@ -82,6 +82,5 @@ int main(int argc, char** argv)
     closesocket(ConnectSocket);
     freeaddrinfo(ptr);
     WSACleanup();
-
     return 0;
 }

@@ -2,7 +2,8 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#include <Windows.h>
+
+#include <Windows.h> //pay antention on the order include, windows.h must be the first
 #include <iphlpapi.h>
 #include <stdio.h>
 #include <winsock2.h>
