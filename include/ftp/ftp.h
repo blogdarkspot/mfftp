@@ -1,5 +1,3 @@
-#include <string>
-
 namespace FTP {
 
 enum class Command {
@@ -56,9 +54,4 @@ enum class Reply {
     CODE_553
 };
 
-class FTP {
-
-    void sendCommand(const ::FTP::Command& c, const std::string& args);
-    void sendReply(const ::FTP::Reply& reply);
-};
 };
