@@ -8,5 +8,7 @@ namespace CMD {
 
     //PASS <SP> <password> <CRLF>
     bool Pass(const char* accountUserName, const char*  password);
+
+    bool Quit();
 };
 };

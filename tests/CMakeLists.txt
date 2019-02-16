@@ -2,7 +2,7 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/extern/catch2" "extern/catch2")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/extern/catch2/contrib")
 
 set(TEST_COMMAND "test_commands" CACHE INTERNAL "tests to command")
-add_executable(${TEST_COMMAND} testscmd.cpp)
+add_executable(${TEST_COMMAND} testscmd.cpp tests_session.cpp tests_ImplFTP.cpp)
 
 if(MSVC)
     target_include_directories( ${TEST_COMMAND}
