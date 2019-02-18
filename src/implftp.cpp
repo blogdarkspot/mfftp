@@ -8,7 +8,6 @@ namespace FTP {
 
 ImplFTP::ImplFTP() noexcept
 {
-    _session = make_unique<FTP::Session>();
 }
 
 void ImplFTP::setDataPort(const string& address)

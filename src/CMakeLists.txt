@@ -1,14 +1,22 @@
 #library commands
-if(MSVC)
-    set(LIBRARY_COMMAND "cmd_windows" CACHE INTERNAL "library with commands avaliable")
-    add_library(${LIBRARY_COMMAND} implcmd.cpp implftp.cpp session.cpp)
-    target_include_directories(${LIBRARY_COMMAND} 
-        PUBLIC 
-            $<INSTALL_INTERFACE:include>
-            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        PRIVATE
-            ${CMAKE_SOURCE_DIR}/src
-    )
-    target_compile_options(${LIBRARY_COMMAND} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
-    target_compile_features(${LIBRARY_COMMAND} PUBLIC cxx_std_17)
-endif()
+cmake_minimum_required(VERSION 3.12)
+
+project(FTPLib VERSION 1.0.0 DESCRIPTION "Internal FTP Library Protocol" LANGUAGES CXX)
+
+add_library(ftpCommandsOBJ OBJECT)
+target_sources(ftpCommandsOBJ PRIVATE implftp.cpp)
+target_compile_options(ftpCommandsOBJ PUBLIC "/MT$<$<CONFIG:Debug>:d>")
+target_compile_features(ftpCommandsOBJ PUBLIC cxx_std_17)
+
+
+add_library(ftpSession OBJECT)
+target_sources(ftpSession PRIVATE session.cpp)
+target_compile_options(ftpSession PUBLIC "/MT$<$<CONFIG:Debug>:d>")
+target_compile_features(ftpSession PUBLIC cxx_std_17)
+
+
+add_library(ftpLib)
+target_include_directories(ftpLib INTERFACE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(ftpLib PUBLIC ftpCommandsOBJ ftpSession)
+
+add_library(FTP::Basic ALIAS ftpLib)

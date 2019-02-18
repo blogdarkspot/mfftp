@@ -1,23 +1,16 @@
-add_subdirectory("${CMAKE_SOURCE_DIR}/extern/catch2" "extern/catch2")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/extern/catch2/contrib")
 
+message( STATUS "$ teste file ${CMAKE_MODULE_PATH}")
 set(TEST_COMMAND "test_commands" CACHE INTERNAL "tests to command")
-add_executable(${TEST_COMMAND} testscmd.cpp tests_session.cpp tests_ImplFTP.cpp)
+
+add_executable(UnitTest)
 
 if(MSVC)
-    target_include_directories( ${TEST_COMMAND}
-        PUBLIC
-         ${CMAKE_SOURCE_DIR}/src
-    )
-    target_compile_options(${TEST_COMMAND} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
-    target_link_libraries(${TEST_COMMAND} ${LIBRARY_COMMAND} Catch2::Catch2)
-    target_compile_features(${TEST_COMMAND} PUBLIC cxx_std_17)
+    target_sources(UnitTest PRIVATE tests_main.cpp tests_session.cpp tests_ImplFTP.cpp)
+    target_compile_options(UnitTest PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+    target_link_libraries(UnitTest PRIVATE FTP::Basic Catch2::Catch2)
 endif()
-
-
-
 
 include(CTest)
 include(Catch)
 
-catch_discover_tests(${TEST_COMMAND})
+catch_discover_tests(UnitTest)
