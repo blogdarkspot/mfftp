@@ -3,44 +3,32 @@
 #pragma once
 
 namespace FTP {
-
-enum class TYPE {
-    ASCII
-};
-
-enum class STRU {
-    FILE,
-    RECORD
-};
-
-enum class MODE {
-    STREAM
-};
+namespace cmd {
 
 using namespace std;
 
-class ImplFTP {
+enum class TYPE { ASCII, NOT_SUPPORTED };
+enum class FORMAT_CONTROL { NO_PRINT, NOT_SUPPORTED };
+enum class STRU { FILE, RECORD, NOT_SUPPORTED };
+enum class MODE { STREAM, NOT_SUPPORTED };
 
-public:
-    struct DataPort {
-        string host;
-        string port;
-    };
+struct DataPort {
+  DataPort() : _host(""), _port("") {}
+  string _host;
+  string _port;
+};
 
-    ImplFTP() noexcept;
-    ~ImplFTP();
+struct Type {
+  Type() : _type(TYPE::ASCII), _formatControl(FORMAT_CONTROL::NO_PRINT) {}
+  FTP::cmd::TYPE _type;
+  FTP::cmd::FORMAT_CONTROL _formatControl;
+};
 
-    void setMode(const string& mode);
-    void setType(const string& type);
-    void setStru(const string& stru);
-    void setDataPort(const string& address);
-    std::string dataPort(const string& host, const string& port);
-    DataPort getDataPort() { return _dataPort; }
+FTP::cmd::MODE ModeCmd(const char &mode);
+FTP::cmd::Type TypeCmd(const string &type);
+FTP::cmd::STRU StruCmd(const char &stru);
+FTP::cmd::DataPort DataPortCmd(const string &address);
+std::string DataPortParse(const string &host, const string &port);
 
-private:
-    DataPort _dataPort;
-    FTP::TYPE _type;
-    FTP::STRU _stru;
-    FTP::MODE _mode;
-}; //implFTP
-}; //FTP
+}; // namespace cmd
+}; // namespace FTP
