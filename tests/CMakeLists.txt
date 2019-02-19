@@ -1,6 +1,5 @@
 
 message( STATUS "$ teste file ${CMAKE_MODULE_PATH}")
-set(TEST_COMMAND "test_commands" CACHE INTERNAL "tests to command")
 
 add_executable(UnitTest)
 target_sources(UnitTest PRIVATE tests_main.cpp tests_ImplFTP.cpp)
