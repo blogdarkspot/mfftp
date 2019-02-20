@@ -1,3 +1,4 @@
+#include <fstream>
 #include <string>
 
 #pragma once
@@ -29,6 +30,7 @@ FTP::cmd::Type TypeCmd(const string &type);
 FTP::cmd::STRU StruCmd(const char &stru);
 FTP::cmd::DataPort DataPortCmd(const string &address);
 std::string DataPortParse(const string &host, const string &port);
-
+bool RetrCmd(const string &path, ifstream &file);
+bool StroCmd(const string &path, ostream &file);
 }; // namespace cmd
 }; // namespace FTP

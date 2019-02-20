@@ -8,26 +8,59 @@
 namespace FTP {
 namespace cmd {
 
+// TODO: I need thing about error report, try/catch is a good idea
 DataPort DataPortCmd(const string &address) {
-  // TODO: The host and port must be validate before set the _dataPort attribute
+  // TODO: The host number size must be tested
   FTP::cmd::DataPort ret;
+
   auto values = utils::split(address, ",");
-  ret._host = values[0] + "." + values[1] + "." + values[2] + "." + values[3];
 
-  uint8_t p1 = stoi(values[4]);
-  uint8_t p2 = stoi(values[5]);
+  auto validHost = [&]() {
+    auto ret = true;
+    for (auto value : values) {
+      if (stoi(value) > UINT8_MAX)
+        ret = false;
+    }
+    return ret;
+  };
 
-  ret._port = std::to_string((p1 << 8) | p2);
+  if (validHost()) {
+
+    ret._host = values[0] + "." + values[1] + "." + values[2] + "." + values[3];
+
+    uint8_t p1 = stoi(values[4]);
+    uint8_t p2 = stoi(values[5]);
+    ret._port = std::to_string((p1 << 8) | p2);
+  }
+
   return ret;
 }
 
 string DataPortParse(const string &host, const string &port) {
-  // TODO: The host and port must be validate before build the string output
-  string output = host;
-  std::replace(output.begin(), output.end(), '.', ',');
-  uint16_t iPort = stoi(port);
-  output +=
-      "," + to_string((0xFF00 & iPort) >> 8) + "," + to_string(0x00FF & iPort);
+  // TODO: The host number size must be tested
+
+  auto output = ""s;
+
+  auto validHost = [&]() {
+    auto ret = true;
+    auto values = utils::split(host, ".");
+    for (auto value : values) {
+      if (stoi(value) > UINT8_MAX)
+        ret = false;
+    }
+    if (stoi(port) > UINT16_MAX)
+      ret = false;
+    return ret;
+  };
+
+  if (validHost()) {
+    output = host;
+    std::replace(output.begin(), output.end(), '.', ',');
+    uint16_t iPort = stoi(port);
+    output += "," + to_string((0xFF00 & iPort) >> 8) + "," +
+              to_string(0x00FF & iPort);
+  }
+
   return output;
 }
 
@@ -80,5 +113,20 @@ STRU StruCmd(const char &stru) {
   }
   return ret;
 }
+
+bool RetrCmd(const string &path, ifstream &file) {
+  // TODO: use ::utils::is_valid_path to check permission and format to return a
+  // better error
+  file.open(path, ifstream::in);
+  return file.is_open();
+}
+
+bool StroCmd(const string &path, ofstream &file) {
+  // TODO: use ::utils::is_valid_path to check permission and format to return a
+  // better error
+  file.open(path, ofstream::out);
+  return file.is_open();
+}
+
 } // namespace cmd
 } // namespace FTP

@@ -9,6 +9,7 @@ if(MSVC)
     target_compile_options(ftpCommandsOBJ PUBLIC "/MT$<$<CONFIG:Debug>:d>")
 endif()
 target_compile_features(ftpCommandsOBJ PUBLIC cxx_std_17)
+target_link_libraries(ftpCommandsOBJ PUBLIC stdc++fs)
 
 
 if(MSVC)
