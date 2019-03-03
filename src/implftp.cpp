@@ -3,9 +3,43 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <set>
 #include <sstream>
 
 namespace FTP {
+
+namespace Machine {
+
+Request ParseRequest(const vector<unsigned char> &request) {
+
+  const size_t maxCommandSize = 7 + 4096;
+  auto ret = Request();
+
+  if (request.size() <= maxCommandSize) {
+
+    if (request.at(request.size() - 1) == '\n' &&
+        request.at(request.size() - 2) == '\r') {
+      auto it = request.begin();
+
+      for (; it != request.begin() + 4; ++it) {
+        if (*it == ' ' || *it == '\r')
+          break;
+      }
+
+      if (*it == ' ') {
+        ret._command = {request.begin(), it};
+        ret._args = {it + 1, request.end() - 2};
+      } else if (*it == '\r') {
+        ret._command = {request.begin(), it};
+      }
+    }
+  }
+
+  return ret;
+}
+
+}; // namespace Machine
+
 namespace cmd {
 
 // TODO: I need thing about error report, try/catch is a good idea
