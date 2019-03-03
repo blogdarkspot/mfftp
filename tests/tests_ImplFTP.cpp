@@ -2,8 +2,6 @@
 
 #include "implftp.h"
 
-#include <memory>
-
 TEST_CASE("Set DataPort", "[command][DataPortCmd]") {
 
   using namespace FTP::cmd;
