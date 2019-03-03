@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 project(telnet VERSION 1.0.0 LANGUAGES CXX)
 
 option(PACKAGE_TESTS "build the tests" ON)
-option(SAMPLES "build the samples" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/extern/catch2/contrib")
 
@@ -15,8 +14,3 @@ if(PACKAGE_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
-
-if(SAMPLES)
-    add_subdirectory(samples)
-endif()
-
