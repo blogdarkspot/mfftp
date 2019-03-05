@@ -1,3 +1,6 @@
+#ifndef DATA_H
+#define DATA_H
+
 #include <string>
 
 namespace ftp {
@@ -199,3 +202,5 @@ struct Error : public MachineResponse
 };
 }; // namespace data
 }; // namespace ftp
+
+#endif
