@@ -16,6 +16,7 @@ enum class ResponseType
     USER,
     QUIT,
     NOOP,
+    UNKNOWN,
     ERROR
 };
 
@@ -186,5 +187,15 @@ struct Noop : public MachineResponse
     {}
 };
 
+struct Unknown : public MachineResponse
+{
+    Unknown() : MachineResponse(ResponseType::UNKNOWN) {}
+
+};
+
+struct Error : public MachineResponse
+{
+    Error() : MachineResponse(ResponseType::ERROR) {}
+};
 }; // namespace data
 }; // namespace ftp
