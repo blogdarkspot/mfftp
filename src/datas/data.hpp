@@ -106,7 +106,7 @@ struct Type : public MachineResponse
     enum class FORMAT_CONTROL
     {
         NO_PRINT,
-        NO_SUPPORTED
+        NOT_SUPPORTED
     };
 
     Type()

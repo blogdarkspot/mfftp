@@ -47,32 +47,51 @@ ModeCmd(const vector<unsigned char>& arguments)
 MachineResponse
 TypeCmd(const vector<unsigned char>& arguments)
 {
-    /*
-        Type ret;
-  switch (type.at(0)) {
-  case 'A':
-    ret._type = TYPE::ASCII;
-    break;
-  default:
-    ret._type = TYPE::NOT_SUPPORTED;
-    break;
-  }
-  if (type.size() == 3)
-    switch (type.at(2)) {
-    case 'N':
-      ret._formatControl = FORMAT_CONTROL::NO_PRINT;
-      break;
-    default:
-      ret._formatControl = FORMAT_CONTROL::NOT_SUPPORTED;
-      break;
-    }
-  else {
-    ret._formatControl = FORMAT_CONTROL::NO_PRINT;
-  }
-  return ret;
-*/
 
-    return Type();
+    Type ret;
+    /*check if size is valid*/
+    /* if size is 3 the second char must be a <sp> */
+    if (arguments.size() == 1 ||
+        (arguments.size() == 3 && arguments.at(1) == ' ')) {
+        auto type = arguments.at(0);
+        ret._code = ResponseCode::CODE_200;
+        switch (type) {
+            case 'A':
+                ret._type = Type::TYPE::ASCII;
+                ret._message = "200 Type has been set to ASCII ";
+                break;
+            default:
+                ret._type = Type::TYPE::NOT_SUPPORTED;
+                ret._code = ResponseCode::CODE_504;
+                ret._message = "504 Command not implemented for that parameter";
+                break;
+        }
+        if (ret._type != Type::TYPE::NOT_SUPPORTED) {
+
+            if (arguments.size() == 3)
+                switch (arguments.at(2)) {
+                    case 'N':
+                        ret._formatControl = Type::FORMAT_CONTROL::NO_PRINT;
+                        ret._message += "no print";
+                        break;
+                    default:
+                        ret._formatControl =
+                          Type::FORMAT_CONTROL::NOT_SUPPORTED;
+                        ret._code = ResponseCode::CODE_504;
+                        ret._message =
+                          "504 Command not implemented for that parameter";
+                        break;
+                }
+            else {
+                ret._formatControl = Type::FORMAT_CONTROL::NO_PRINT;
+                ret._message += "no print";
+            }
+        }
+    } else {
+        ret._code = ResponseCode::CODE_501;
+        ret._message = "501 Syntax error in parameters or arguments";
+    }
+    return ret;
 }
 
 MachineResponse

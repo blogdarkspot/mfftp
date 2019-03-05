@@ -12,7 +12,7 @@ FtpMachines::request(const vector<unsigned char>& buffer)
     string command;
     int pos = 0;
     for (; pos <= MAX_CMD_SIZE; pos++) {
-        if (buffer.at(pos) == ' ') {
+        if (buffer.at(pos) == ' ' || buffer.at(pos) == '\r') {
             command = { buffer.begin(), buffer.begin() + pos };
             pos++;
             break;
@@ -20,10 +20,11 @@ FtpMachines::request(const vector<unsigned char>& buffer)
     }
     // TODO: Move this logic to for above
     for (auto& c : command)
-        toupper(c);
+        c = toupper(c);
 
     if (buffer.at(buffer.size() - 1) == '\n' &&
-        buffer.at(buffer.size() - 2) == '\r') {
+        buffer.at(buffer.size() - 2) == '\r' &&
+        (buffer.at(pos - 1) == ' ' && buffer.at(pos) != '\r')) {
 
         auto machine = _machines.find(command);
 
@@ -33,10 +34,16 @@ FtpMachines::request(const vector<unsigned char>& buffer)
               machine->second({ buffer.begin() + pos, buffer.end() - 2 });
             this->parserMR(responseMachine);
         } else {
-            this->parserMR(Unknown());
+            Unknown rep;
+            rep._message = "502 Command not implemented";
+            rep._code = ResponseCode::CODE_502;
+            this->parserMR(rep);
         }
     } else {
-        this->parserMR(Error());
+        Error error;
+        error._message = "500 Syntax error, command unrecognized";
+        error._code = ResponseCode::CODE_500;
+        this->parserMR(error);
     }
 }
 
@@ -67,9 +74,12 @@ FtpMachines::parserMR(const MachineResponse& mr)
             break;
     }
 
-    // _response(response);
-};
+    vector<unsigned char> response = { mr._message.begin(), mr._message.end() };
+    response.push_back('\r');
+    response.push_back('\n');
 
+    _response(response);
+};
 
 } // namespace machines
 } // namespace ftp
