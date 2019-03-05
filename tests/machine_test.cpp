@@ -305,3 +305,53 @@ TEST_CASE("TYPE Command with wrong argumets syntax begin with <sp> and end with 
 
     ftp.request(buffer);
 }
+
+TEST_CASE("PORT command with rigth parameter", "[machine][structure]")
+{
+    using namespace std;
+    using namespace ::ftp::data;
+    using namespace ::ftp::machines;
+
+    string msg = "PORT 129,168,9,19,0,20\r\n";
+    vector<unsigned char> buffer{ msg.begin(), msg.end() };
+
+    auto response = [](const vector<unsigned char>& buffer) {
+        string sCode = { buffer.begin(), buffer.begin() + 3 };
+        auto code = stoi(sCode);
+        REQUIRE(code == 200);
+        string message{ "Command Okay" };
+        string rMessage{ buffer.begin() + 4, buffer.end() - 2 };
+        REQUIRE(message == rMessage);
+        REQUIRE('\r' == buffer.at(buffer.size() - 2));
+        REQUIRE('\n' == buffer.at(buffer.size() - 1));
+    };
+
+    auto ftp = FtpMachines(response);
+
+    ftp.request(buffer);
+}
+
+TEST_CASE("PORT command with parameter wrong", "[machine][structure]")
+{
+    using namespace std;
+    using namespace ::ftp::data;
+    using namespace ::ftp::machines;
+
+    string msg = "PORT 256,168,9,19,0,20\r\n";
+    vector<unsigned char> buffer{ msg.begin(), msg.end() };
+
+    auto response = [](const vector<unsigned char>& buffer) {
+        string sCode = { buffer.begin(), buffer.begin() + 3 };
+        auto code = stoi(sCode);
+        REQUIRE(code == 501);
+        string message{ "Syntax error in parameters or arguments" };
+        string rMessage{ buffer.begin() + 4, buffer.end() - 2 };
+        REQUIRE(message == rMessage);
+        REQUIRE('\r' == buffer.at(buffer.size() - 2));
+        REQUIRE('\n' == buffer.at(buffer.size() - 1));
+    };
+
+    auto ftp = FtpMachines(response);
+
+    ftp.request(buffer);
+}

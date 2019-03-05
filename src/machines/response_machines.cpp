@@ -1,33 +1,40 @@
 #include "response_machines.hpp"
+#include "../util.hpp"
 
 namespace ftp {
 namespace machines {
+
 MachineResponse
 DataPortCmd(const vector<unsigned char>& arguments)
 {
-    /*
-    auto values = utils::split(address, ",");
 
-      auto validHost = [&]() {
+    DataPort ret;
+    string args { arguments.begin(), arguments.end() };
+    auto values = utils::split(args, ",");
+    /*check if each number is <= 255*/
+    auto validHost = [&]() {
         auto ret = true;
         for (auto value : values) {
-          if (stoi(value) > UINT8_MAX)
-            ret = false;
+            if (stoi(value) > UINT8_MAX)
+                ret = false;
         }
         return ret;
-      };
+    };
+    /* h1,h2,h3,h4,p1,p2 == 6*/
+    if (values.size() == 6 && validHost()) {
+            ret._host =
+              values[0] + "." + values[1] + "." + values[2] + "." + values[3];
+            uint8_t p1 = stoi(values[4]);
+            uint8_t p2 = stoi(values[5]);
+            ret._port = std::to_string((p1 << 8) | p2);
+            ret._message = "200 Command Okay";
+            ret._code = ResponseCode::CODE_200;
+    } else {
+        ret._message = "501 Syntax error in parameters or arguments";
+        ret._code = ResponseCode::CODE_501;
+    }
 
-      if (validHost()) {
-
-        ret._host = values[0] + "." + values[1] + "." + values[2] + "." +
-    values[3];
-
-        uint8_t p1 = stoi(values[4]);
-        uint8_t p2 = stoi(values[5]);
-        ret._port = std::to_string((p1 << 8) | p2);
-      }
-    */
-    return DataPort();
+    return ret;
 };
 
 MachineResponse
